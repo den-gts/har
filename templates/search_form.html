@@ -1,0 +1,118 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+    <title>Поиск</title>
+    {% load static %}
+    {% get_static_prefix as STATIC_PREFIX %}
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}style000.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}print000.css" type="text/css" media="print">
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}suggest0.css" type="text/css" media="screen" charset="utf-8">
+    <!--[if IE]><link rel="stylesheet" type="text/css" href="style_ie.css" /><![endif]-->
+    <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="style_ie6.css" /><![endif]-->
+    <link type="text/css" href="{{ STATIC_PREFIX }}jquery-u.css" rel="stylesheet">
+
+
+
+</head>
+<body>
+<div id="page">
+    <div id="page-top">
+        <div id="page-bottom">
+            <div id="header">
+                <div id="header-info">
+                    <h1>Поиск</h1>
+                    <div class="description">Поиск записи в базе данных по критериям</div>
+                </div>
+                <div id="header-menu">
+                    <ul>
+                        <li class="page_item"><a href="/add/">Добавить</a></li>
+                        <li class="page_item"><a href="/search/">Поиск</a></li>
+                        <li class="page_item"><a href="/print/">Печать</a></li>
+                        <li class="page_item"><a href="/admin/">Администрирование</a></li>
+                    </ul>
+                </div>
+                <div id="header-date">{% now "DATE_FORMAT" %}</div>
+{% comment %}                <div id="header-cats">
+                    <ul>
+                        <li class="cat-item"><a href="http://har.ko/index.php"></a></li>
+                        <li class="cat-item"><a href="http://har.ko/index.php?manual=1"></a></li>
+                    </ul>
+                </div>{% endcomment %}
+            </div>
+            <div id="main">
+                <div id="top-panel">
+                    <div id="top-panel-top"></div>
+                </div>
+                <div id="today">
+                    <form action="" method="GET">
+                        <table>
+                            {{ form.as_table }}
+                        </table>
+                        <input type="submit" value="Поиск">
+                    </form>
+                    {% if requestGET %}
+                        <div id="result">
+                        <table>
+                            <thead>
+                            <tr class="tableHeader">
+                                <td>Обозначение</td>
+                                <td>Наименование</td>
+                                <td>Проект</td>
+                                <td>Разработал</td>
+                                <td>Дата</td>
+                                <td>Примечание</td>
+                            </tr>
+                            </thead>
+                            {% if Result  %}
+                                    {% for ResItem in Result %}
+                                        <tr class="{% cycle 'odd' 'even' %}">
+                                            <td>{{ ResItem.Har }}.{{ ResItem.Decimal }}</td>
+                                            <td>{{ ResItem.Name }}</td>
+                                            <td>{{ ResItem.Project }}</td>
+                                            <td>{{ ResItem.Developer }}</td>
+                                            <td>{{ ResItem.CreatingDate }}</td>
+                                            <td>{{ ResItem.Note }}</td>
+                                        </tr>
+                                    {% endfor %}
+                            {% else %}
+                                <p>Поиск не дал результатов</p>
+                            {% endif %}
+                        </table>
+                        </div>
+                        <div class='paginator'>
+                            {% if Result.paginator.num_pages > 1  %}
+                                <span class='step-links'>
+
+                                <a href="?page=1" title="Первая страница">&laquo;</a>
+                                <a href="?page={{ Result.previous_page_number }}"
+                                   title="Предыдущая страница">&larr;</a>
+                            {% endif %}
+                                {% for Npage in LimitNPages %}
+                                    {% if Result.number == Npage %}
+                                        <span class='current-page'>{{ Result.number }}</span>
+                                    {% else %}
+                                        <a href="?page={{ Npage }}">{{ Npage }}</a>
+                                    {% endif %}
+                                {% endfor %}
+                                {% if Result.has_next %}
+                                    <a href="?page={{ Result.next_page_number }}" title="Следующая страница">&rarr;</a>
+                                    <a href="?page={{ Result.paginator.num_pages }}"
+                                       title="Последняя страница({{ Result.paginator.num_pages }})">&raquo;</a>
+                                </span>
+                        {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div id="footer">2010<br>
+                Designed by Den<br>
+                Valid XHTML and CSS
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

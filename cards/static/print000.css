@@ -1,0 +1,65 @@
+body {
+	background-color: #FFF;
+	padding: 0px;
+}
+
+table {
+	font-family: "Courier New", Courier, monospace;
+	font-size: small;
+	background-color: #FFF;
+	border-collapse:collapse;
+	empty-cells: show;
+	text-align:center;
+	border-top-width: 2px;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-left-width: 2px;
+}
+
+th {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: 13px;
+	border-top-width: 2px;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-left-width: 2px;
+}
+
+h1 {
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size: medium;
+	font-weight: normal;
+	text-align:center;
+	
+}
+td {
+	border-right-width:2px;
+}
+@media print{
+
+	
+
+	th{
+		font-size:13px;
+	}
+	table{
+		font-size:13px;
+		page-break-inside: auto;
+	}
+	h1.first{
+		page-break-before:avoid;
+		font-size:16px;
+		page-break-after: avoid;
+	}
+	body{
+		page-break-before:avoid;
+	}
+	td, th{
+		page-break-inside: avoid;
+	}
+	#header, #footer, #noprint {
+		display:none;
+	}
+	
+	
+}

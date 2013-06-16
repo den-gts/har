@@ -1,0 +1,19 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Запись добавлена</title>
+</head>
+<body>
+Запись добавлена.
+    <ul>
+    <li id='added'>{{ AddedItem }}</li>
+        {% for item in ItemList %}
+            <li>
+                {{ item }}
+            </li>
+        {% endfor %}
+    </ul>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}<title>Поиск</title>{% endblock %}
+{% block header-menu %}
+{#    <div id="header-cats">#}
+{#        <ul>#}
+{#            <li class="cat-item"><a href="http://har.ko/index.php">Автоматически</a></li>#}
+{#            <li class="cat-item"><a href="http://har.ko/index.php?manual=1">Вручную</a></li>#}
+{#        </ul>#}
+{#    </div>#}
+{% endblock header-menu %}
+{% block contect %}
+    <form action="" method="GET">
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Поиск">
+    </form>
+    {% if requestGET %}
+        <div id="result">
+            <table>
+                <thead>
+                <tr class="tableHeader">
+                    <td>Обозначение</td>
+                    <td>Наименование</td>
+                    <td>Проект</td>
+                    <td>Разработал</td>
+                    <td>Дата</td>
+                    <td>Примечание</td>
+                </tr>
+                </thead>
+                {% if Result  %}
+                    {% for ResItem in Result %}
+                        <tr class="{% cycle 'odd' 'even' %}">
+                            <td>{{ ResItem.Har }}.{{ ResItem.Decimal|stringformat:"03d" }}{{ ResItem.DecimalMore }}</td>
+                            <td>{{ ResItem.Name }}</td>
+                            <td>{{ ResItem.Project }}</td>
+                            <td>{{ ResItem.Developer }}</td>
+                            <td>{{ ResItem.CreatingDate }}</td>
+                            <td>{{ ResItem.Note }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <p>Поиск не дал результатов</p>
+                {% endif %}
+            </table>
+        </div>
+        <div class='paginator'>
+            {% if Result.paginator.num_pages > 1  %}
+                <span class='step-links'>
+
+                <a href="?page=1&{{ Referer }}" title="Первая страница">&laquo;</a>
+                <a href="?page={{ Result.previous_page_number }}&{{ Referer }}"
+                   title="Предыдущая страница">&larr;</a>
+            {% endif %}
+            {% for Npage in LimitNPages %}
+                {% if Result.number == Npage %}
+                    <span class='current-page'>{{ Result.number }}</span>
+                {% else %}
+                    <a href="?page={{ Npage }}&{{ Referer }}">{{ Npage }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if Result.has_next %}
+                <a href="?page={{ Result.next_page_number }}&{{ Referer }}" title="Следующая страница">&rarr;</a>
+                <a href="?page={{ Result.paginator.num_pages }}&{{ Referer }}"
+                   title="Последняя страница({{ Result.paginator.num_pages }})">&raquo;</a>
+                </span>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock contect %}

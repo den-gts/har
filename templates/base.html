@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+
+    {% block title %}<title>Поиск</title>{% endblock title %}
+    {% load static %}
+    {% get_static_prefix as STATIC_PREFIX %}
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}style000.css" type="text/css" media="screen">
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}print000.css" type="text/css" media="print">
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}suggest0.css" type="text/css" media="screen" charset="utf-8">
+    <!--[if IE]><link rel="stylesheet" type="text/css" href="style_ie.css" /><![endif]-->
+    <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="style_ie6.css" /><![endif]-->
+    <link type="text/css" href="{{ STATIC_PREFIX }}jquery-u.css" rel="stylesheet">
+
+
+
+</head>
+<body>
+<div id="page">
+    <div id="page-top">
+        <div id="page-bottom">
+            <div id="header">
+
+                    <div id="header-info">
+                        {% block header %}
+                            <h1>Поиск</h1>
+                            <div class="description">Поиск записи в базе данных по критериям</div>
+                        {% endblock header %}
+                    </div>
+                    <div id="header-menu">
+                        <ul>
+                            <li class="page_item"><a href="/add/">Добавить</a></li>
+                            <li class="page_item"><a href="/search/">Поиск</a></li>
+                            <li class="page_item"><a href="/print/">Печать</a></li>
+                            <li class="page_item"><a href="/admin/">Администрирование</a></li>
+                        </ul>
+                    </div>
+                    <div id="header-date">{% now "DATE_FORMAT" %}</div>
+                    {% block header-menu %}
+
+                    {% endblock header-menu %}
+            </div>
+            <div id="main">
+                <div id="top-panel">
+                    <div id="top-panel-top"></div>
+                </div>
+                <div id="today">
+                {% block contect %}
+
+                {% endblock contect %}
+                </div>
+            </div>
+            <div id="footer">2012<br>
+                Designed by Dis<br>
+                Version 2.0
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
