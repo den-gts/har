@@ -16,6 +16,7 @@
         <input type="submit" value="Поиск">
     </form>
     {% if requestGET %}
+        <input type="submit" value="Экспорт">
         <div id="result">
             <table>
                 <thead>
@@ -49,18 +50,22 @@
                 <span class='step-links'>
 
                 <a href="?page=1&{{ Referer }}" title="Первая страница">&laquo;</a>
-                <a href="?page={{ Result.previous_page_number }}&{{ Referer }}"
-                   title="Предыдущая страница">&larr;</a>
-            {% endif %}
-            {% for Npage in LimitNPages %}
-                {% if Result.number == Npage %}
-                    <span class='current-page'>{{ Result.number }}</span>
-                {% else %}
-                    <a href="?page={{ Npage }}&{{ Referer }}">{{ Npage }}</a>
+                {% if Result.has_previous %}
+                    <a href="?page={{ Result.previous_page_number }}&{{ Referer }}"
+                       title="Предыдущая страница">&larr;</a>
                 {% endif %}
-            {% endfor %}
-            {% if Result.has_next %}
-                <a href="?page={{ Result.next_page_number }}&{{ Referer }}" title="Следующая страница">&rarr;</a>
+
+                {% for Npage in LimitNPages %}
+                    {% if Result.number == Npage %}
+                        <span class='current-page'>{{ Result.number }}</span>
+                    {% else %}
+                        <a href="?page={{ Npage }}&{{ Referer }}">{{ Npage }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if Result.has_next %}
+                    <a href="?page={{ Result.next_page_number }}&{{ Referer }}" title="Следующая страница">&rarr;</a>
+                {% endif %}
                 <a href="?page={{ Result.paginator.num_pages }}&{{ Referer }}"
                    title="Последняя страница({{ Result.paginator.num_pages }})">&raquo;</a>
                 </span>

@@ -90,9 +90,11 @@ def search(request,template_name='search.html'):
             #Если форма пустая тогда отображаем все записи
             if EmptyForm:
                 SearchResult=SearchResult.all()
+
             #формирование постраничного вывода результатов поиска
             paginator=Paginator(SearchResult,25)#второй аргумент - количество элементов на странице
             page=request.GET.get('page')
+
             try:
                 SearchResult=paginator.page(page)
             except PageNotAnInteger:
@@ -108,6 +110,7 @@ def search(request,template_name='search.html'):
                 if Referer:
                     Referer+='&'
                 Referer+="%s=%s"%(key,value[0])
+            SearchResult.has_previous()
             return render_to_response(template_name,{'form':form,
                                                      'Result':SearchResult,
                                                      'requestGET':True,
@@ -166,3 +169,6 @@ def firstHole(data):#функция определения первой "дыр�
                 break
         prv=i
     return prv+1
+
+def exportCSV(request):
+    pass
