@@ -137,7 +137,7 @@ def convXls(request):
     for item in fileList:
         currentFileNumber+=1
         percentDone=float(currentFileNumber)/len(fileList)*100
-        if item[-4:] in ('.xls', '.xlsx'):
+        if item[-4:] in ('.xls', 'xlsx'):
             print "[%.1f]procced file:%s" %(percentDone,item)
             vxls2sql(path,item)
 
