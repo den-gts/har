@@ -7,7 +7,7 @@ import xlrd
 import datetime,re
 from django.core.exceptions import ValidationError
 from cards.models import Card,Project,Developer,Devision
-LOG_FILE='f:\\db.log'
+LOG_FILE='d:\\log\\db.log'
 
 
 def convertExcelTime(ExcelTime,file):#функция конвертирования формата екселевского времени в формат базы данных
@@ -78,7 +78,7 @@ def xls2sql(source_path,source_file):
                         CreatingDate=row[5])
                     save.save()
                 except ValueError, ValidationError:
-                    logFile=open("f:\\db.log",'a')
+                    logFile=open(LOG_FILE,'a')
                     logFile.write('[%s.%s]:Ошибка ввода в БД'%(har,row[0]))
                     print '[%s.%s]:Ошибка ввода в БД'%(har,row[0])
                     logFile.close()

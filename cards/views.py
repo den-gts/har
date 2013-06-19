@@ -128,7 +128,7 @@ def convXls(request):
     startTime=time.time()
 
     #xls2sql('f:/temp.xls',db.cursor())
-    path=u"Y:/Нормоконтроль/Картотека СКИД"
+    path=u"X:/guest/Нормоконтроль/Картотека СКИД"
 
     fileList=os.listdir(path)
     print len(fileList)
