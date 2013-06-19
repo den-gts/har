@@ -17,6 +17,7 @@ urlpatterns = patterns('',
     url(r'^search/?$', search),
     url(r'^xls2sql/$', convXls),
     url(r'^path/$', show_cur_path),
+    url(r'getcsv', exportCSV),
 #    url(r'^admin_tools/',include('admin_tools.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:

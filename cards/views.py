@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Create your views here.
 import os
-from django.shortcuts import render_to_response,HttpResponse
+from django.shortcuts import render_to_response, HttpResponse
 from django.core.paginator import  Paginator,PageNotAnInteger,EmptyPage
 from cards.forms import AddCardForm,SearchForm
 from cards.models import Card
@@ -31,33 +31,33 @@ def add_card(request,template_name='add_card.html',result_template='result_add.h
                 listDecimal=list(set(listDecimal))#удаляем дубликаты.
                 RsltDec=firstHole(listDecimal)#ищем окно,если нет то прибавляем к последнему децимальному 1
             else:
-                #если такой характеристики раньше не было, устанавливаем децимальный =001
-                RsltDec=1
+                # если такой характеристики раньше не было, устанавливаем децимальный =001
+                RsltDec = 1
 
             #вносим данные в БД
-            Result=Card(Har=cd['har'],
-                Decimal=RsltDec,
-                Name=cd['name'],
-                Project=cd['ProjectForm'],
-                Developer=cd['DeveloperForm'],
-                CreatingDate=datetime.date.today(),
-                Note=cd['note']
+            Result = Card(Har=cd['har'],
+                          Decimal=RsltDec,
+                          Name=cd['name'],
+                          Project=cd['ProjectForm'],
+                          Developer=cd['DeveloperForm'],
+                          CreatingDate=datetime.date.today(),
+                          Note=cd['note']
             )
             Result.save()
             return render_to_response(result_template,{'ItemList':FndItm,'AddedItem':Result})
 
     else:
         form=AddCardForm()
-    return render_to_response(template_name,{'form':form})
+    return render_to_response(template_name, {'form':form})
 
 
-def search(request,template_name='search.html'):
-    if request.GET:  #проверяем первый ли запуск страницы поиска
+def search(request, template_name='search.html'):
+    if request.GET:  # проверяем первый ли запуск страницы поиска
         form = SearchForm(request.GET)
         SearchResult = getSearchResult(form)
 
-        #формирование постраничного вывода результатов поиска
-        paginator = Paginator(SearchResult,25)  #второй аргумент - количество элементов на странице
+        # формирование постраничного вывода результатов поиска
+        paginator = Paginator(SearchResult, 25)  # второй аргумент - количество элементов на странице
         page = request.GET.get('page')
 
         try:
@@ -66,7 +66,7 @@ def search(request,template_name='search.html'):
             SearchResult = paginator.page(1)
         except EmptyPage:
             SearchResult = paginator.page(paginator.num_pages)
-        #составляем последнюю часть URL с данными формы для постраничной навигации
+        # составляем последнюю часть URL с данными формы для постраничной навигации
         DictRequest = dict(request.GET)
         if 'page' in DictRequest:
             DictRequest.pop('page')
@@ -82,26 +82,29 @@ def search(request,template_name='search.html'):
                                                   'LimitNPages': getLimitPageRange(paginator,page),
                                                   'Referer': Referer,
                                                 })
-    else:  #если первый запуск
+    else:  # если первый запуск
         form = SearchForm()
     return render_to_response(template_name, {'form': form})
+
 
 def show_cur_path(request):
     return HttpResponse("path:"+os.curdir)
 
-def getLimitPageRange(dataList,page):
-    if not page: page=1
-    LIMIT=4
-    left=int(page)-LIMIT-1
-    right=int(page)+LIMIT
-    if left<0:
-        left=0
-    if right>dataList.num_pages:
-        right=dataList.num_pages
+
+def getLimitPageRange(dataList, page):
+    if not page: page = 1
+    LIMIT = 4
+    left = int(page)-LIMIT-1
+    right = int(page)+LIMIT
+    if left < 0:
+        left = 0
+    if right > dataList.num_pages:
+        right = dataList.num_pages
     return dataList.page_range[left:right]
 
-def firstHole(data):#функция определения первой "дыры" в последовательности. например 1,2,3,5. Вернет 4
-    if type(data)!=tuple and type(data)!=list:
+
+def firstHole(data):  # функция определения первой "дыры" в последовательности. например 1,2,3,5. Вернет 4
+    if type(data) != tuple and type(data) != list:
         raise TypeError('given %s.list or tuple excepcted.' % str(type(data)))
     prv = 0
 
@@ -113,7 +116,9 @@ def firstHole(data):#функция определения первой "дыр�
 
 
 def exportCSV(request):
-    pass
+    import csv
+    SearchResult = getSearchResult(SearchForm(request.POST))
+    return HttpResponse(SearchResult)
 
 
 def getSearchResult(form):
@@ -125,15 +130,15 @@ def getSearchResult(form):
         cd = form.cleaned_data
         SearchResult = Card.objects
         EmptyForm = True
-        #для обозначения отдельные манипуляции. Так как оно состоит из характеристики и децимального номера
-        #разделенные точкой. В форме одно поле har,  а в модели 2 поля har и Decimal
+        # для обозначения отдельные манипуляции. Так как оно состоит из характеристики и децимального номера
+        # разделенные точкой. В форме одно поле har,  а в модели 2 поля har и Decimal
         if cd['har']:
             EmptyForm = False
             SearchResult = SearchResult.filter(Har__contains=cd['har'][0])
-            if cd['har'][1]:  #если есть децимальная часть то записываем ее
+            if cd['har'][1]:  # если есть децимальная часть то записываем ее
                 SearchResult = SearchResult.filter(Decimal__contains=cd['har'][1])
             print cd['har']
-        #Словарь соответсвия полей модели с полями формы
+        # Словарь соответсвия полей модели с полями формы
         ConfList = {'Name__contains':cd['name'],
                     'Project': cd['ProjectForm'],
                     'Developer': cd['DeveloperForm'],
