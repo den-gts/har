@@ -4,21 +4,21 @@
 __author__ = 'Den'
 
 import xlrd
-import datetime, re
-from django.core.exceptions import ValidationError
+import datetime, re, timer
+from django.shortcuts import HttpResponse
 from cards.models import Card, Project, Developer, Devision
 
-LOG_FILE = 'd:\\log\\db.log'
+LOG_FILE = 'db.log'
 
 
-def convertExcelTime(ExcelTime, file):#функция конвертирования формата екселевского времени в формат базы данных
+def convertExcelTime(ExcelTime, xlsFile):#функция конвертирования формата екселевского времени в формат базы данных
     startTime = datetime.date(1899, 12, 30)#кривой эксель отсчитывает от 0 января 1900г
 
     try:
         delta = datetime.timedelta(days=ExcelTime)
     except TypeError, err:
-        print 'error in $s: $s' % file, ExcelTime
-        ErrorInLog('[%s] Time:%s Error:%s\n'.decode('utf-8') % (file, ExcelTime, err))
+        print 'error in $s: $s' % xlsFile, ExcelTime
+        ErrorInLog('[%s] Time:%s Error:%s\n'.decode('utf-8') % (xlsFile, ExcelTime, err))
         delta = datetime.timedelta(days=0)
     return startTime + delta
 
@@ -99,3 +99,20 @@ def ErrorInLog(message):
     logFile.write(message.encode('utf-8'))
     logFile.close()
 
+
+def convXls(request):
+    import time, os
+    from har.settings import XLS_PATH
+    startTime = time.time()
+    fileList = os.listdir(XLS_PATH)
+    print len(fileList)
+    currentFileNumber = 0
+    for item in fileList:
+        currentFileNumber += 1
+        percentDone = float(currentFileNumber)/len(fileList)*100
+        if item[-4:] in ('.xls', 'xlsx'):
+            print "[%.1f]procced file:%s" % (percentDone, item)
+            xls2sql(XLS_PATH, item)
+
+    worktime = "Время выполнения: %s" % timer.strTimer(startTime, time.time()).encode('utf-8')
+    return HttpResponse(worktime)

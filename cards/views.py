@@ -3,7 +3,6 @@
 import os
 from django.shortcuts import render_to_response,HttpResponse
 from django.core.paginator import  Paginator,PageNotAnInteger,EmptyPage
-from cards import timer
 from cards.forms import AddCardForm,SearchForm
 from cards.models import Card
 from django.views.decorators.csrf import csrf_exempt
@@ -120,29 +119,6 @@ def search(request,template_name='search.html'):
     else:#если первый запуск
         form=SearchForm()
     return render_to_response(template_name,{'form':form})
-
-def convXls(request):
-    from cards.views_xls2sql import xls2sql as vxls2sql
-    import time, os
-
-    startTime=time.time()
-
-    path=u"X:/guest/Нормоконтроль/Картотека СКИД"
-
-    fileList=os.listdir(path)
-    print len(fileList)
-    currentFileNumber=0
-#try:
-    for item in fileList:
-        currentFileNumber+=1
-        percentDone=float(currentFileNumber)/len(fileList)*100
-        if item[-4:] in ('.xls', 'xlsx'):
-            print "[%.1f]procced file:%s" %(percentDone,item)
-            vxls2sql(path,item)
-
-#finally:
-    worktime= "Время выполнения: %s"% timer.strTimer(startTime,time.time()).encode('utf-8')
-    return HttpResponse(worktime)
 
 def show_cur_path(request):
     return HttpResponse("path:"+os.curdir)

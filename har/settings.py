@@ -1,4 +1,5 @@
 # Django settings for har project.
+# -*- coding: utf-8 -*-
 import os
 import manage
 DEBUG = True
@@ -163,3 +164,5 @@ LOGGING = {
 
 #TEMPLATE_CONTEXT_PROCESSORS=('django.core.context_processors.request',
 #                             'django.contrib.auth.context_processors.auth',)
+
+XLS_PATH=u"X:/guest/Нормоконтроль/Картотека СКИД"
