@@ -11,8 +11,8 @@ from cards.models import Card, Project, Developer, Devision
 LOG_FILE = 'db.log'
 
 
-def convertExcelTime(ExcelTime, xlsFile):#функция конвертирования формата екселевского времени в формат базы данных
-    startTime = datetime.date(1899, 12, 30)#кривой эксель отсчитывает от 0 января 1900г
+def convertExcelTime(ExcelTime, xlsFile):  # функция конвертирования формата екселевского времени в формат базы данных
+    startTime = datetime.date(1899, 12, 30)  # кривой эксель отсчитывает от 0 января 1900г
 
     try:
         delta = datetime.timedelta(days=ExcelTime)
@@ -116,3 +116,7 @@ def convXls(request):
 
     worktime = "Время выполнения: %s" % timer.strTimer(startTime, time.time()).encode('utf-8')
     return HttpResponse(worktime)
+
+
+if __name__ == '__main__':
+    convXls(None)
