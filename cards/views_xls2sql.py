@@ -68,7 +68,7 @@ def xls2sql(source_path, source_file):
                 except TypeError:
                     ErrorInLog(u'[%s.%s]:Ошибка заполнения времени %s' % (har, row[0], row[5]))
 
-                if row[2].strip:
+                if str(row[2]).strip:
                     xlsProject = Project.objects.get_or_create(Name=row[2])
                 else:
                     xlsProject = 'Не указан'
