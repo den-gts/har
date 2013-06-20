@@ -1,12 +1,21 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+if __name__ == '__main__':
+    from django.conf import settings
 
-__author__ = 'Den'
+    settings.configure(DATABASES={
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'D:/project/python/har/cards.db'
+        }
+    }
+    )
 
 import xlrd
 import datetime, re, timer
 from django.shortcuts import HttpResponse
 from cards.models import Card, Project, Developer, Devision
+
 
 LOG_FILE = 'db.log'
 
@@ -41,7 +50,7 @@ def xls2sql(source_path, source_file):
 
         if row[1] and row[5]:#поля Имя и дата не должны быть пустыми
             DecMore = ""
-            fullDecimal=""
+            fullDecimal = ""
             #проверка входнных данных
             try:
                 row[0] = '%03d' % int(row[0])
@@ -50,32 +59,33 @@ def xls2sql(source_path, source_file):
                     if not row[i]:
                         ErrorInLog('[%s.%s]:поле %s пусто\n'.decode('utf-8') % (har, row[0], fields[i]))
             except ValueError, err:
-                #если децималный номер нестандартный
-                pat = re.compile(r"^(\d{1,3})((-|\.).*)")#патерн для рег. выражения. 2ая группа - допустимые символы
-                #после которых идет дополнительная часть
+                #  если децималный номер нестандартный
+                pat = re.compile(r"^(\d{1,3})((-|\.).*)")  # патерн для рег. выражения. 2ая группа - допустимые символы
+                #  после которых идет дополнительная часть
                 reResult = pat.match(row[0])
                 fullDecimal = row[0]
-                if reResult:#Если децимальный номер не валидный то
-                    row[0] = reResult.group(1)#разделяем децимальный номер на валидную часть
-                    DecMore = reResult.group(2)#и не валидную
+                if reResult:  # Если децимальный номер не валидный то
+                    row[0] = reResult.group(1)  # разделяем децимальный номер на валидную часть
+                    DecMore = reResult.group(2)  # и не валидную
                 else:
                     ErrorInLog('[%s.%s]:%s\n'.decode('utf-8') % (har, row[0], err))
-
-            if not fullDecimal in [str(validDecimal)+DecMore.strip() for validDecimal in sDecimal]:#проверяем есть ли совпаедния с БД
+                # проверяем есть ли совпаедния с БД
+            if not fullDecimal in [str(validDecimal) + DecMore.strip() for validDecimal in sDecimal]:
 
                 try:
                     row[5] = convertExcelTime(row[5], source_file)
                 except TypeError:
                     ErrorInLog(u'[%s.%s]:Ошибка заполнения времени %s' % (har, row[0], row[5]))
 
-                if str(row[2]).strip:
+                if unicode(row[2]).strip:
                     xlsProject = Project.objects.get_or_create(Name=row[2])
                 else:
                     xlsProject = 'Не указан'
                 xlsDeveloper = Developer.objects.get_or_create(Name=row[3],
                                                                defaults={
-                                                                   'Devision': Devision.objects.get_or_create(Name='КО')[
-                                                                       0]})
+                                                                   'Devision':
+                                                                       Devision.objects.get_or_create(Name='КО')[
+                                                                           0]})
                 try:
                     save = Card(Har=har, Decimal=row[0],
                                 DecimalMore=DecMore,
@@ -103,18 +113,26 @@ def ErrorInLog(message):
 def convXls(request):
     import time, os
     from har.settings import XLS_PATH
+
     startTime = time.time()
-    fileList = os.listdir(XLS_PATH)
+    fileList = []
+    for path in XLS_PATH:
+        if os.path.exists(path):
+            XLS_PATH = path
+            break
+    fileList = os.listdir(str(XLS_PATH))
+
     print len(fileList)
     currentFileNumber = 0
     for item in fileList:
         currentFileNumber += 1
-        percentDone = float(currentFileNumber)/len(fileList)*100
+        percentDone = float(currentFileNumber) / len(fileList) * 100
         if item[-4:] in ('.xls', 'xlsx'):
             print "[%.1f]procced file:%s" % (percentDone, item)
             xls2sql(XLS_PATH, item)
 
     worktime = "Время выполнения: %s" % timer.strTimer(startTime, time.time()).encode('utf-8')
+    print worktime
     return HttpResponse(worktime)
 
 
