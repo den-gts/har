@@ -1,12 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import os, manage
 if __name__ == '__main__':
     from django.conf import settings
 
     settings.configure(DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'D:/project/python/har/cards.db'
+            'NAME': os.path.dirname(manage.__file__)+'/cards.db'
         }
     }
     )
@@ -120,7 +121,7 @@ def convXls(request):
         if os.path.exists(path):
             XLS_PATH = path
             break
-    fileList = os.listdir(str(XLS_PATH))
+    fileList = os.listdir(unicode(XLS_PATH))
 
     print len(fileList)
     currentFileNumber = 0
