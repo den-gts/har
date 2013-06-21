@@ -49,7 +49,7 @@ def xls2sql(source_path, source_file):
     for rownum in range(1, sheet.nrows):
         row = sheet.row_values(rownum)
 
-        if row[1] and row[5]:#поля Имя и дата не должны быть пустыми
+        if row[1] and row[5]:  # поля Имя и дата не должны быть пустыми
             DecMore = ""
             fullDecimal = ""
             #проверка входнных данных
@@ -70,9 +70,8 @@ def xls2sql(source_path, source_file):
                     DecMore = reResult.group(2)  # и не валидную
                 else:
                     ErrorInLog('[%s.%s]:%s\n'.decode('utf-8') % (har, row[0], err))
-                # проверяем есть ли совпаедния с БД
-            if not fullDecimal in [str(validDecimal) + DecMore.strip() for validDecimal in sDecimal]:
-
+            # проверяем есть ли совпаедния с БД
+            if not fullDecimal in [("%03d" % validDecimal) + DecMore.strip() for validDecimal in sDecimal]:
                 try:
                     row[5] = convertExcelTime(row[5], source_file)
                 except TypeError:
