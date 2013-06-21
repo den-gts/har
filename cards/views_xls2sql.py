@@ -34,7 +34,7 @@ def convertExcelTime(ExcelTime, xlsFile):  # функция конвертиро
 
 
 def xls2sql(source_path, source_file):
-    har = source_file[0:-4]#значение характеристики позиции, источник-имя файла
+    har = source_file.split('.')[:1]#значение характеристики позиции, источник-имя файла
     rb = xlrd.open_workbook("%s\%s" % (source_path, source_file))
     sheet = rb.sheet_by_index(0)
 
