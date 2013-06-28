@@ -158,11 +158,12 @@ def exportCSV(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="har.csv"'
     CSVwriter = csv.writer(response,delimiter=';')
-    CSVwriter.writerow(['Обозначение', 'Наименование', 'Разработал', 'Проект', 'Дата'])
+    # Cp1251 все для творния Microsoft с их кодиировкой
+    CSVwriter.writerow([x.encode('cp1251') for x in u'Обозначение', u'Наименование', u'Разработал', u'Проект', u'Дата'])
     for row in SearchResult:
         CSVwriter.writerow(["%s.%03d%s" % (row.Har, int(row.Decimal), row.DecimalMore),
-                            unicode(row.Name).encode('utf-8'),
-                           unicode(row.Developer).encode('utf-8'),
-                           unicode(row.Project).encode('utf-8'),
+                            unicode(row.Name).encode('cp1251'),
+                           unicode(row.Developer).encode('cp1251'),
+                           unicode(row.Project).encode('cp1251'),
                            row.CreatingDate.strftime('%d.%m.%Y'),])
     return response
