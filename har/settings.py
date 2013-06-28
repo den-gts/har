@@ -165,4 +165,4 @@ LOGGING = {
 #TEMPLATE_CONTEXT_PROCESSORS=('django.core.context_processors.request',
 #                             'django.contrib.auth.context_processors.auth',)
 
-XLS_PATH=(u"X:/guest/Нормоконтроль/Картотека СКИД",u"D:/project/python/har/files")
+XLS_PATH=(u"X:\\guest\\НОРМОКОНТРОЛЬ\\Картотека СКИД",u"D:/project/python/har/files")

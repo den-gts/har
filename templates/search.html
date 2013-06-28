@@ -14,10 +14,9 @@
             {{ form.as_table }}
         </table>
         <input type="submit" value="Поиск">
+        {% if requestGET %}<input type="submit" formaction="getcsv" value="Экспорт">{% endif %}
     </form>
     {% if requestGET %}
-        <form action="getcsv" method="POST">{% csrf_token %}<input type="submit" value="Экспорт"></form>
-
         <div id="result">
             {% if Result  %}
                 <table>

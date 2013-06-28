@@ -34,7 +34,7 @@ def convertExcelTime(ExcelTime, xlsFile):  # функция конвертиро
 
 
 def xls2sql(source_path, source_file):
-    har = source_file.split('.')[:1]#значение характеристики позиции, источник-имя файла
+    har = source_file.split('.')[:1][0]  # значение характеристики позиции, источник-имя файла
     rb = xlrd.open_workbook("%s\%s" % (source_path, source_file))
     sheet = rb.sheet_by_index(0)
 
@@ -87,9 +87,9 @@ def xls2sql(source_path, source_file):
                                                                        Devision.objects.get_or_create(Name='КО')[
                                                                            0]})
                 try:
-                    save = Card(Har=har, Decimal=row[0],
+                    save = Card(Har=har.encode('utf-8'), Decimal=row[0],
                                 DecimalMore=DecMore,
-                                Name=row[1],
+                                Name=row[1].encode('utf-8'),
                                 Project=xlsProject[0],
                                 Developer=xlsDeveloper[0],
                                 CreatingDate=row[5])

@@ -8,6 +8,43 @@ from cards.models import Card
 from django.views.decorators.csrf import csrf_exempt
 import datetime
 
+
+def getSearchResult(form):
+    #делаем поля необезательными.. криво, не явно, но лучшего способа не нашел
+    for item in form.fields.values():
+        item.required = False
+    SearchResult = None
+    if form.is_valid():
+        cd = form.cleaned_data
+        SearchResult = Card.objects
+        EmptyForm = True
+        # для обозначения отдельные манипуляции. Так как оно состоит из характеристики и децимального номера
+        # разделенные точкой. В форме одно поле har,  а в модели 2 поля har и Decimal
+        if cd['har']:
+            EmptyForm = False
+            SearchResult = SearchResult.filter(Har__contains=cd['har'][0])
+            if cd['har'][1]:  # если есть децимальная часть то записываем ее
+                SearchResult = SearchResult.filter(Decimal__contains=cd['har'][1])
+            print cd['har']
+        # Словарь соответсвия полей модели с полями формы
+        ConfList = {'Name__contains':cd['name'],
+                    'Project': cd['ProjectForm'],
+                    'Developer': cd['DeveloperForm'],
+                    'Note__contains': cd['note'],
+                    'CreatingDate__gte': cd['Since'],
+                    'CreatingDate__lte': cd['Before'],
+        }
+        #Цикл формирования запросов поиска.
+        for listKey in ConfList:
+            if ConfList[listKey]:
+                EmtpyForm = False
+                SearchResult = SearchResult.filter(**{listKey: ConfList[listKey]})
+        #Если форма пустая тогда отображаем все записи
+        if EmptyForm:
+            SearchResult = SearchResult.all()
+    return SearchResult
+
+
 def show_all(request,template_name='show_card.html'):
     items=Card.objects.all()
     return render_to_response(template_name,{'items':items})
@@ -117,41 +154,15 @@ def firstHole(data):  # функция определения первой "ды
 
 def exportCSV(request):
     import csv
-    SearchResult = getSearchResult(SearchForm(request.POST))
-    return HttpResponse(SearchResult)
-
-
-def getSearchResult(form):
-    #делаем поля необезательными.. криво, не явно, но лучшего способа не нашел
-    for item in form.fields.values():
-        item.required = False
-    SearchResult = None
-    if form.is_valid():
-        cd = form.cleaned_data
-        SearchResult = Card.objects
-        EmptyForm = True
-        # для обозначения отдельные манипуляции. Так как оно состоит из характеристики и децимального номера
-        # разделенные точкой. В форме одно поле har,  а в модели 2 поля har и Decimal
-        if cd['har']:
-            EmptyForm = False
-            SearchResult = SearchResult.filter(Har__contains=cd['har'][0])
-            if cd['har'][1]:  # если есть децимальная часть то записываем ее
-                SearchResult = SearchResult.filter(Decimal__contains=cd['har'][1])
-            print cd['har']
-        # Словарь соответсвия полей модели с полями формы
-        ConfList = {'Name__contains':cd['name'],
-                    'Project': cd['ProjectForm'],
-                    'Developer': cd['DeveloperForm'],
-                    'Note__contains': cd['note'],
-                    'CreatingDate__gte': cd['Since'],
-                    'CreatingDate__lte': cd['Before'],
-        }
-        #Цикл формирования запросов поиска.
-        for listKey in ConfList:
-            if ConfList[listKey]:
-                EmtpyForm = False
-                SearchResult = SearchResult.filter(**{listKey: ConfList[listKey]})
-        #Если форма пустая тогда отображаем все записи
-        if EmptyForm:
-            SearchResult = SearchResult.all()
-    return SearchResult
+    SearchResult = getSearchResult(SearchForm(request.GET))
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="har.csv"'
+    CSVwriter = csv.writer(response,delimiter=';')
+    CSVwriter.writerow(['Обозначение', 'Наименование', 'Разработал', 'Проект', 'Дата'])
+    for row in SearchResult:
+        CSVwriter.writerow(["%s.%03d%s" % (row.Har, int(row.Decimal), row.DecimalMore),
+                            unicode(row.Name).encode('utf-8'),
+                           unicode(row.Developer).encode('utf-8'),
+                           unicode(row.Project).encode('utf-8'),
+                           row.CreatingDate.strftime('%d.%m.%Y'),])
+    return response
