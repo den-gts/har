@@ -92,7 +92,7 @@ def search(request, template_name='search.html'):
     if request.GET:  # проверяем первый ли запуск страницы поиска
         form = SearchForm(request.GET)
         SearchResult = getSearchResult(form)
-
+        request.session['result'] = SearchResult
         # формирование постраничного вывода результатов поиска
         paginator = Paginator(SearchResult, 25)  # второй аргумент - количество элементов на странице
         page = request.GET.get('page')
@@ -154,7 +154,7 @@ def firstHole(data):  # функция определения первой "ды
 
 def exportCSV(request):
     import csv
-    SearchResult = getSearchResult(SearchForm(request.GET))
+    SearchResult = request.session['result']
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="har.csv"'
     CSVwriter = csv.writer(response,delimiter=';')
