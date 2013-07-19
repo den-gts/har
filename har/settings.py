@@ -1,4 +1,5 @@
 # Django settings for har project.
+# -*- coding: utf-8 -*-
 import os
 import manage
 DEBUG = True
@@ -99,7 +100,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -163,3 +164,5 @@ LOGGING = {
 
 #TEMPLATE_CONTEXT_PROCESSORS=('django.core.context_processors.request',
 #                             'django.contrib.auth.context_processors.auth',)
+
+XLS_PATH=(u"X:\\guest\\НОРМОКОНТРОЛЬ\\Картотека СКИД",u"D:/project/python/har/files")

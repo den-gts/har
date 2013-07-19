@@ -14,36 +14,38 @@
             {{ form.as_table }}
         </table>
         <input type="submit" value="Поиск">
+        {% if requestGET %}<input type="submit" formaction="getcsv" value="Экспорт">{% endif %}
     </form>
     {% if requestGET %}
-        <input type="submit" value="Экспорт">
         <div id="result">
-            <table>
-                <thead>
-                <tr class="tableHeader">
-                    <td>Обозначение</td>
-                    <td>Наименование</td>
-                    <td>Проект</td>
-                    <td>Разработал</td>
-                    <td>Дата</td>
-                    <td>Примечание</td>
-                </tr>
-                </thead>
-                {% if Result  %}
-                    {% for ResItem in Result %}
-                        <tr class="{% cycle 'odd' 'even' %}">
-                            <td>{{ ResItem.Har }}.{{ ResItem.Decimal|stringformat:"03d" }}{{ ResItem.DecimalMore }}</td>
-                            <td>{{ ResItem.Name }}</td>
-                            <td>{{ ResItem.Project }}</td>
-                            <td>{{ ResItem.Developer }}</td>
-                            <td>{{ ResItem.CreatingDate }}</td>
-                            <td>{{ ResItem.Note }}</td>
-                        </tr>
-                    {% endfor %}
-                {% else %}
-                    <p>Поиск не дал результатов</p>
-                {% endif %}
-            </table>
+            {% if Result  %}
+                <table>
+                    <thead>
+                    <tr class="tableHeader">
+                        <td>Обозначение</td>
+                        <td>Наименование</td>
+                        <td>Проект</td>
+                        <td>Разработал</td>
+                        <td>Дата</td>
+                        <td>Примечание</td>
+                    </tr>
+                    </thead>
+
+                        {% for ResItem in Result %}
+                            <tr class="{% cycle 'odd' 'even' %}">
+                                <td>{{ ResItem.Har }}.{{ ResItem.Decimal|stringformat:"03d" }}{{ ResItem.DecimalMore }}</td>
+                                <td>{{ ResItem.Name }}</td>
+                                <td>{{ ResItem.Project }}</td>
+                                <td>{{ ResItem.Developer }}</td>
+                                <td nowrap>{{ ResItem.CreatingDate }}</td>
+                                <td>{{ ResItem.Note }}</td>
+                            </tr>
+                        {% endfor %}
+                </table>
+            {% else %}
+                <p>Поиск не дал результатов</p>
+            {% endif %}
+
         </div>
         <div class='paginator'>
             {% if Result.paginator.num_pages > 1  %}
