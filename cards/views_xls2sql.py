@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import os, manage
 if __name__ == '__main__':
+    import sys, os
     from django.conf import settings
-
+    sys.path.extend(['D:\\coding\\har'])
+    import manage
     settings.configure(DATABASES={
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -137,4 +138,5 @@ def convXls(request):
 
 
 if __name__ == '__main__':
+    sys.path.extend(['D:\\coding\\har'])
     convXls(None)
